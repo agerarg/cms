@@ -12,10 +12,10 @@ router.get("/",(req,res)=>{
     res.render("admin/index");
 });
 router.get("/posts",(req,res)=>{
-    res.send("post list");
+    res.render("admin/posts");
 });
 router.get("/posts/create",(req,res)=>{
-    res.send("post create");
+    res.render("admin/posts_crear");
 });
 
 
