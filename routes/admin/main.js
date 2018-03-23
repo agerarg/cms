@@ -11,13 +11,27 @@ const Post = require("../../models/Post");
 router.get("/",(req,res)=>{
     res.render("admin/index");
 });
+
+router.get("/edit/:id",(req,res)=>{
+    var id = req.params.id;
+        Post.findById(id).then(post=>{
+            res.render("admin/posts_editar",{post:post});
+        });
+
+});
+
 router.get("/posts",(req,res)=>{
-    res.render("admin/posts");
+
+    Post.find({}).then(posts=>{
+        res.render("admin/posts",{posts:posts});
+    });
+
 });
 
 router.get("/posts/create",(req,res)=>{
     res.render("admin/posts_crear");
 });
+
 router.post("/posts/create",(req,res)=>{
 
    const newPost = new Post({
