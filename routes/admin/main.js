@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../../models/Post");
 const faker = require("faker");
-
- router.all("/*",(req,res,next)=>{
+const {isEmpty, uploadDir} = require("../../helpers/upload-helper");
+const fs = require("fs");
+router.all("/*",(req,res,next)=>{
      req.app.locals.layout = "admin";
      next();
 });
@@ -17,6 +18,7 @@ router.post("/inserterino",(req,res)=>{
             post.title = faker.name.title();
             post.status = "public";
             post.body = faker.lorem.sentence();
+            post.file = "basic.jpg";
             post.save().then(savedPost=>{});
         }
         res.redirect("/admin/posts");    
@@ -56,8 +58,14 @@ router.get("/edit/:id",(req,res)=>{
 /////
 router.delete("/posts/:id",(req,res)=>{
 
-    Post.remove({_id:req.params.id}).then(removed=>{
-          res.redirect("/admin/posts");
+    Post.findOne({_id:req.params.id}).then(post=>{
+
+        //res.send("deleting:"+uploadDir+post.file);
+        if (fs.existsSync(uploadDir+post.file)) {
+            fs.unlink(uploadDir+post.file,err=>{ });
+        }
+        post.remove().then(err=>{});
+        res.redirect("/admin/posts");
     });
 
 });
@@ -71,34 +79,48 @@ router.get("/posts",(req,res)=>{
 });
 
 router.get("/posts/create",(req,res)=>{
+
     res.render("admin/posts_crear");
 });
 
 router.post("/posts/create",(req,res)=>{
+    let errors = [];
 
 
-    let file = req.files.file;
-    let filename = file.name;
+    if(!req.body.titulo){
+        errors.push({mensaje: 'Pone un titulo!'})
+    }
 
-    file.mv("./public/upload/"+ filename,(err)=>{
-        if(err) throw err;
-        
-    });
+    if(errors.length > 0){
+        res.render("admin/posts_crear",{errors:errors});
+    }
+    else
+    {
+        let filename="basic.jpg";
+        if(!isEmpty(req.files))
+        {
+        let file = req.files.file;
+            filename = Date.now() + '-' +file.name;
 
-//    const newPost = new Post({
-//         title: req.body.titulo,
-//         status: req.body.estatus,
-//         body: req.body.body
-//     });
+            file.mv("./public/upload/"+ filename,(err)=>{
+                if(err) throw err;
+                
+            });
+        }
+        const newPost = new Post({
+            title: req.body.titulo,
+            status: req.body.estatus,
+            body: req.body.body,
+            file: filename
+        });
 
-//     newPost.save().then(savedPost=>{
-//         console.log(savedPost);
-//         res.redirect("/admin/posts")
-//     }).catch(err=>{
-//         res.send(err);
-//     });
-  //  console.log(req.body);
-
+        newPost.save().then(savedPost=>{
+            console.log(savedPost);
+            res.redirect("/admin/posts")
+        }).catch(err=>{
+            res.send(err);
+        });
+    }
 });
 
 module.exports = router;

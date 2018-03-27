@@ -1,5 +1,8 @@
 <div>
 <h1>Crear Posts</h1>
+{{#each errors}} 
+    {{mensaje}}
+{{/each}} 
 </div>
 <form action="/admin/posts/create" method="POST" enctype="multipart/form-data">
 <div  class="form-group">Titulo:
