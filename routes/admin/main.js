@@ -39,8 +39,19 @@ router.put("/edit/:id",(req,res)=>{
         post.title = req.body.titulo;
         post.status = req.body.estatus;
         post.body = req.body.body;
+        if(!isEmpty(req.files))
+        {
+        let file = req.files.file;
+        let  filename = Date.now() + '-' +file.name;
+        post.file = filename;
 
+            file.mv("./public/upload/"+ filename,(err)=>{
+                if(err) throw err;
+                
+            });
+        }
         post.save().then(savedPost=>{
+            req.flash('update_msg', `Post Actualizado: ${post.title}`);
             res.redirect("/admin/posts");
         });
     });
@@ -65,6 +76,7 @@ router.delete("/posts/:id",(req,res)=>{
             fs.unlink(uploadDir+post.file,err=>{ });
         }
         post.remove().then(err=>{});
+        req.flash('delete_msg', `Post deletiado: ${post.title}`);
         res.redirect("/admin/posts");
     });
 
@@ -115,8 +127,8 @@ router.post("/posts/create",(req,res)=>{
         });
 
         newPost.save().then(savedPost=>{
-            console.log(savedPost);
-            res.redirect("/admin/posts")
+           req.flash('succsess_msg', `Post creado: ${savedPost.title}`);
+            res.redirect("/admin/posts");
         }).catch(err=>{
             res.send(err);
         });

@@ -1,4 +1,5 @@
 <h1>Lista de Posts</h1>
+
 <table class="table table-bordered">
 <thead>
     <tr>
@@ -6,6 +7,7 @@
          <th>Img</th>
         <th>Titulo</th>
         <th>Status</th>
+        <th>Fecha</th>
     </tr>
 </thead>
 <tbody>
@@ -15,6 +17,7 @@
          <th><img src="/upload/{{file}}" width="50" height="50"  class="img-rounded"></th>
         <th>{{title}}</th>
         <th>{{status}}</th>
+        <th>{{generateTime date "MMMM Do YYYY"}}</th>
          <th><a class="btn btn-info" href="/admin/edit/{{id}}">Editar</th>
          <th>
 

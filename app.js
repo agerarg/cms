@@ -6,6 +6,10 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const expressFileUpload = require("express-fileupload");
+const session = require("express-session");
+const flash = require("connect-flash");
+
+
 //dbconection
 mongoose.connect("mongodb://localhost:27017/cms").then(db=>{
     console.log("conectado a la base de datos (cmd)");
@@ -15,9 +19,9 @@ mongoose.connect("mongodb://localhost:27017/cms").then(db=>{
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Setup layout
-const {select} = require("./helpers/helperino");
+const {select,generateTime} = require("./helpers/helperino");
 app.set('view engine','handlebars');
-app.engine("handlebars",exphbs({defaultLayout: 'home',helpers:{select:select}}));
+app.engine("handlebars",exphbs({defaultLayout: 'home',helpers:{select:select,generateTime:generateTime}}));
 
 //Method Override
 app.use(methodOverride("_method"));
@@ -28,6 +32,23 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 // Upload middleware
 app.use(expressFileUpload());
+
+app.use(session({
+    secret: "asdasd",
+    resave: true,
+    saveUninitialized: true
+}));
+
+app.use(flash());
+
+// handle var variable
+
+app.use((req,res,next)=>{
+    res.locals.succsess_msg = req.flash("succsess_msg");
+    res.locals.delete_msg = req.flash("delete_msg");
+    res.locals.update_msg = req.flash("update_msg");
+    next();
+});
 
 //Routes
 const home = require("./routes/home/main");
