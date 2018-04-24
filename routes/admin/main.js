@@ -9,6 +9,8 @@ router.all("/*",(req,res,next)=>{
      next();
 });
 
+
+
 //Insert data
 router.post("/inserterino",(req,res)=>{
 

@@ -53,11 +53,11 @@ app.use((req,res,next)=>{
 //Routes
 const home = require("./routes/home/main");
 const admin = require("./routes/admin/main");
-
+const category = require("./routes/admin/category");
 // User Routes
 app.use("/", home);
 app.use("/admin", admin);
-
+app.use("/admin/category",category);
 
 app.listen(9300,()=>{
     console.log("listenint 9300");
