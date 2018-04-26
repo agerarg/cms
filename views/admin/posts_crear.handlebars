@@ -21,7 +21,14 @@
     <option value="draf">Draf</option>
     </select>
 </div>
-
+<div  class="form-group">Categoria:
+<div>
+<select class="form-control" id="category" name="category">
+    {{#each categories}}
+    <option value="{{id}}">{{name}}</option>
+   {{/each}}
+    </select>
+</div>
 <div class="form-group">Body:
 <div>
 <input type="text" class="form-control" id="body" name="body" size="20px">

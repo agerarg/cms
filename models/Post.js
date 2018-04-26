@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
 
+    category:{
+        type: Schema.Types.ObjectId,
+        ref: "categorys"
+    },
     
     title:{
         type: String,
@@ -25,9 +29,13 @@ const PostSchema = new Schema({
     date:{
         type:Date,
         default: Date.now()
-    }
+    },
 
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'comments'
+    }]
 
-});
+}, {usePushEach:true});
 
 module.exports = mongoose.model("posts",PostSchema);

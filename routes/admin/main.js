@@ -1,9 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../../models/Post");
+const Category = require("../../models/Category");
 const faker = require("faker");
 const {isEmpty, uploadDir} = require("../../helpers/upload-helper");
 const fs = require("fs");
+
+const {userAuth} = require("../../helpers/auth");
+
 router.all("/*",(req,res,next)=>{
      req.app.locals.layout = "admin";
      next();
@@ -41,6 +45,7 @@ router.put("/edit/:id",(req,res)=>{
         post.title = req.body.titulo;
         post.status = req.body.estatus;
         post.body = req.body.body;
+        post.category = req.body.category;
         if(!isEmpty(req.files))
         {
         let file = req.files.file;
@@ -64,7 +69,10 @@ router.put("/edit/:id",(req,res)=>{
 router.get("/edit/:id",(req,res)=>{
     var id = req.params.id;
         Post.findById(id).then(post=>{
-            res.render("admin/posts_editar",{post:post});
+            Category.find({}).then(categories=>{ 
+            res.render("admin/posts_editar",{post:post,categories:categories});
+            });
+
         });
 
 });
@@ -86,15 +94,19 @@ router.delete("/posts/:id",(req,res)=>{
 
 router.get("/posts",(req,res)=>{
 
-    Post.find({}).then(posts=>{
+    Post.find({}).populate('category').then(posts=>{
         res.render("admin/posts",{posts:posts});
     });
 
 });
 
+
 router.get("/posts/create",(req,res)=>{
 
-    res.render("admin/posts_crear");
+    Category.find({}).then(categories=>{    
+        res.render("admin/posts_crear",{categories,categories});
+    });
+
 });
 
 router.post("/posts/create",(req,res)=>{
@@ -125,6 +137,7 @@ router.post("/posts/create",(req,res)=>{
             title: req.body.titulo,
             status: req.body.estatus,
             body: req.body.body,
+            category: req.body.category,
             file: filename
         });
 

@@ -20,6 +20,16 @@
     {{/select}}
     </select>
 </div>
+<div  class="form-group">Categoria:
+<div>
+<select class="form-control" id="category" name="category">
+     {{#select post.category}}
+        {{#each categories}}
+        <option value="{{id}}">{{name}}</option>
+    {{/each}}
+    {{/select}}
+    </select>
+</div>
 <div class="form-group">Body:
 <div>
 <input type="text" value="{{post.body}}" class="form-control" id="body" name="body" size="20px">
