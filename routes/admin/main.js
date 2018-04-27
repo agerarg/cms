@@ -3,6 +3,8 @@ const router = express.Router();
 const Post = require("../../models/Post");
 const Category = require("../../models/Category");
 const faker = require("faker");
+const Comment = require("../../models/Comment");
+
 const {isEmpty, uploadDir} = require("../../helpers/upload-helper");
 const fs = require("fs");
 
@@ -42,6 +44,7 @@ router.put("/edit/:id",(req,res)=>{
     var id = req.params.id;
     Post.findById(id).then(post=>{
 
+        post.user = req.user.id;
         post.title = req.body.titulo;
         post.status = req.body.estatus;
         post.body = req.body.body;
@@ -79,13 +82,24 @@ router.get("/edit/:id",(req,res)=>{
 /////
 router.delete("/posts/:id",(req,res)=>{
 
-    Post.findOne({_id:req.params.id}).then(post=>{
+    Post.findOne({_id:req.params.id}).populate('comments').then(post=>{
 
         //res.send("deleting:"+uploadDir+post.file);
         if (fs.existsSync(uploadDir+post.file)) {
             fs.unlink(uploadDir+post.file,err=>{ });
         }
-        post.remove().then(err=>{});
+
+
+        post.remove().then(err=>{
+            if(!post.comments.length < 1){
+                post.comments.forEach(comment=>{
+                    comment.remove();
+                });
+            }
+        });
+
+
+
         req.flash('delete_msg', `Post deletiado: ${post.title}`);
         res.redirect("/admin/posts");
     });
@@ -134,6 +148,7 @@ router.post("/posts/create",(req,res)=>{
             });
         }
         const newPost = new Post({
+            user: req.user.id,
             title: req.body.titulo,
             status: req.body.estatus,
             body: req.body.body,

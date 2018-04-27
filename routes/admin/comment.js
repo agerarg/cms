@@ -21,10 +21,11 @@ router.get("/delete/:id",(req,res)=>{
 
         Comment.findByIdAndRemove(req.params.id).then(coments=>{
 
-                res.redirect(`/admin/comment`);
-
-        })
-
+                Post.findOneAndUpdate({comments: req.params.id},{$pull:{comments: req.params.id}},(err,data)=>{
+                        if(err) return err;
+                        res.redirect(`/admin/comment`);
+                });
+        });
 });
 
 router.post("/post",(req,res)=>{
