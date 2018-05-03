@@ -50,4 +50,13 @@ router.post("/post",(req,res)=>{
 
 });
 
+router.post("/approve",(req,res)=>{
+
+       Comment.findByIdAndUpdate(req.body.id,{$set: {approve: req.body.approve}},(err,result)=>{
+               if(err) return err;
+               res.send(result);
+       });
+
+});
+
 module.exports = router;

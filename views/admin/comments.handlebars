@@ -5,6 +5,7 @@
     <tr>
       <th scope="col">id</th>
       <th scope="col">Owner</th>
+       <th scope="col">Approve</th>
       <th scope="col">Body</th>
     </tr>
   </thead>
@@ -13,6 +14,7 @@
     <tr>
       <td>{{id}}</td>
       <td>{{user.firtsName}}</td>
+      <td><input data-id="{{id}}" {{#if approve}} checked {{/if}} type="checkbox" name="ApproveComment"></td>
       <td>{{body}}</td>
       <td><a class="btn btn-danger" href="/admin/comment/delete/{{id}}">Delete</a></td>
     </tr>
