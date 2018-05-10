@@ -19,9 +19,9 @@ mongoose.connect("mongodb://localhost:27017/cms").then(db=>{
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Setup layout
-const {select,generateTime} = require("./helpers/helperino");
+const {select,generateTime,paginate} = require("./helpers/helperino");
 app.set('view engine','handlebars');
-app.engine("handlebars",exphbs({defaultLayout: 'home',helpers:{select:select,generateTime:generateTime}}));
+app.engine("handlebars",exphbs({defaultLayout: 'home',helpers:{select:select,generateTime:generateTime,paginate:paginate}}));
 
 //Method Override
 app.use(methodOverride("_method"));

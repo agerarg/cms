@@ -9,6 +9,10 @@ module.exports = {
     },
     generateTime: function(date,format){
         return moment(date).format(format);
+    },
+    paginate: function(options)
+    {
+        console.log(options);
     }
 
 

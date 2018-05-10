@@ -127,7 +127,7 @@ router.post("/register",(req,res)=>{
 
 router.get("/post/:id",(req,res)=>{
 
-    Post.findOne({_id:req.params.id})
+    Post.findOne({slug:req.params.id})
     .populate({path:'comments',match:{approve: true}, populate:{path:'user', model:'users'}})
     .populate("user")
     .then(post=>{
